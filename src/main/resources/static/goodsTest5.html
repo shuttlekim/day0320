@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.min.css">
+<style type="text/css">
+	*{
+		margin: 0px;
+		padding: 0px;
+	}
+	body{
+		font: 62.5%;
+	}
+	.item{
+		margin: 3px;
+		padding: 3px;
+	}
+	.item > img{
+		width: 100px;
+		height: 100px;
+	}
+	#wrap{
+		overflow: hidden;
+	}
+	#wrap > div{
+		float: left;
+	}
+	#dock{
+		position: fixed;
+		min-height: 160px;
+		width: 100%;
+		bottom: 0px;
+		z-index: 1;
+	}
+	#dock > div{
+		float: right;
+	}
+	#f{
+		visibility: hidden;
+	}
+	
+</style>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var arr;
+		var login_status = false;
+		
+		$("#addCart").click(function(){
+			if( login_status==true ){
+				var cartList = $("#dock > .item");
+				$.each(cartList, function(idx, item){
+					var gno = $(item).attr("gno");
+					var qty = $(item).find("qty").val();
+					var g = {gno:gno, qty:qty};
+					$.ajax("insertCart",{data:g, success:function(){
+						
+					}})
+				})
+			}else{
+				alert("로그인을 하세요.");
+			}
+		})
+		
+		$("#showTab").click(function(){
+			$("#f").css("visibility","visible");
+		})
+		
+		$("#login").click(function(){
+			var data = $("#f").serializeArray();
+			$.ajax("login"),{data: data, success: function(r){
+				alert(r);
+			}}
+		})
+		
+		$.getJSON("goodsList",function(data){
+			arr = data
+			$.each(arr, function(idx, goods){
+				var item = $("<div class='ui-widget-content ui-corner-all item'></div>").attr("gno", goods.no);
+				var img = $("<img/>").attr("src","img/"+goods.fname);
+				var title = $("<div></div>").html(goods.item);
+				var price = $("<div></div>").html("가격 :"+goods.price+" $");
+				var qty = $("<input type='number' class='qty'>");
+				$(qty).css("visibility","hidden");
+				$(item).append(img, title, price, qty);
+				$("#wrap").append(item);
+				
+				$("#wrap > div").draggable({
+					helper:"clone",
+					zIndex:100,
+					scroll:false
+				});
+				
+				$("#dock").droppable({
+					accept:"#wrap > div",
+					drop:function(event, ui){
+						$(ui.draggable).fadeOut(function(){
+							$(this).appendTo("#dock").fadeIn();
+							$(this).find(".qty").css("visibility","visible");
+						});
+						
+					}
+				});
+				$("body").droppable({
+					accept:"#dock > div",
+					drop:function(event, ui){
+						$(ui.draggable).fadeOut(function(){
+							
+							$(this).appendTo("#wrap").fadeIn();
+						});
+					}
+				});
+			
+			})
+			
+		})
+		
+	})
+</script>
+</head>
+<body>
+	<div id="wrap"></div>
+	<button id="showTab">로그인</button>
+	<button id="addCart">담기</button><br>
+	<form id="f">
+		<table>
+			<tr>
+				<td><label for="mem_id">ID</label></td>
+				<td><input type="text" id="mem_id" default="null"></td>
+			</tr>
+			<tr>
+				<td><label for="pwd">PWD</label></td>
+				<td><input type="text" id="pwd" default="null"></td>
+			</tr>
+		</table>
+		<button id="login">로그인</button>
+		<button id="reset">취소</button>
+	</form>
+	<div id="dock" class="ui-state-error"></div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

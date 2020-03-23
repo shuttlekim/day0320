@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var arr;
+		$.getJSON("listStock",function(data){
+			arr = data;
+			$.each(data, function(idx, stock){
+				var tr = $("<tr></tr>").append( $("<td></td>").html(stock.sname), $("<td></td>").html(stock.pprice) ).attr("idx",idx);
+				
+				$(tr).click(function(){
+					var idx = $(this).attr("idx");
+					var table_1 = 
+				})
+				
+				$("#list").append(tr);
+			})
+			
+		})
+	})
+</script>
+</head>
+<body>
+	<h2>Simple 주식 거래 화면</h2>
+	<table width="100%">
+		<tr>
+			<td>
+				<div>
+					<table id="list" border="1" width="55%">
+						<th>종목명</th>
+						<th>현재가</th>
+					</table>
+				</div>
+				<div id="purchase" title="매수">
+					
+				</div>
+			</td>
+			<td></td>
+		</tr>
+	</table>
+	
+	
+</body>
+</html>
