@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	.item{
+		margin: 5px;
+		padding: 5px;
+		width: 120px;
+		height: 150px;
+		border: 1px solid;
+		border-radius: 10px;
+	}
+	p{
+		text-align: center;
+	}
+</style>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var arr;
+		var listData = function(){
+			$.each(arr, function(idx, goods){
+				var img = $("<img/>").attr({
+					"src":"/img/"+goods.fname,
+					"width":110,
+					"height":110
+				})
+				var title = $("<p></p>").html(goods.item + "("+goods.price+" $)");
+				var div = $("<div class=item></div").append(img, title);
+				$("#list").append(div);
+			})
+		}
+		
+		$(window).scroll(function(){
+			var sh = $(window).scrollTop() + $(window).height();
+			var dh = $(document).height();
+			if(sh + 200 > dh){
+				listData();
+			}
+		})
+		
+		$.getJSON("/goodsList",function(data){
+			arr = data;
+			listData();
+		})
+	})
+</script>
+</head>
+<body>
+	<div id=list></div>
+</body>
+</html>
